@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">QR Barcode Scanner</string>
+
+    <string name="scan">Scan</string>
+    <string name="create">Create</string>
+    <string name="history">History</string>
+
+    <string name="scan_qr_barcode">Scan QR/Barcode</string>
+    <string name="decode_from_file">Decode from File</string>
+    <string name="decode_from_url">Decode from Url</string>
+
+    <string name="toggle_flash">Flash</string>
+    <string name="flash_on">Flash [ON]</string>
+    <string name="flash_off">Flash [OFF]</string>
+    <string name="auto_focus_on">Auto Focus [ON]</string>
+    <string name="auto_focus_off">Auto Focus [OFF]</string>
+    <string name="formats">Formats</string>
+    <string name="choose_formats">Choose Formats</string>
+    <string name="select_camera">Select a Camera</string>
+
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Cancel</string>
+
+    <string name="select_barcode">Select Barcode/QR code</string>
+    <string name="image_is_not_barcode">Image is not a Barcode/QR code</string>
+    <string name="barcode_content_text_hint">Type text</string>
+    <string name="barcode_content_number_hint">Type number</string>
+
+
+    <string name="enter_url">Enter URL</string>
+    <string name="url_hint">www.foo.com</string>
+    <string name="decode">Decode</string>
+    <string name="encoding_format">Encoding Format</string>
+    <string name="change_color">Change Color</string>
+    <string name="share">Share</string>
+
+    <string name="sound">Sound</string>
+    <string name="sound_summary">Play sound on scan success</string>
+    <string name="setting">Setting</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="vibrate_summary">Vibrate on scan success</string>
+    <string name="start_in_scan_mode">Start in Scan Mode</string>
+    <string name="start_in_scan_mode_summary">Start Application in scan mode</string>
+    <string name="save_in_history">Save in History</string>
+    <string name="save_in_history_summary">Save in history scanned and decoded QR/Barcodes</string>
+</resources>

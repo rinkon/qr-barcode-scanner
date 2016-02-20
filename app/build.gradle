@@ -1,0 +1,32 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion compileSdkVersionDependency
+    buildToolsVersion buildToolsVersionDependency
+
+    defaultConfig {
+        applicationId "com.shahidul.qr.barcode.scanner"
+        minSdkVersion 11
+        targetSdkVersion targetSdkVersionDependency
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile supportV7Library
+    compile supportDesignLibrary
+    compile supportV4Library
+    compile supportV7CardView
+    compile supportRecyclerViewLibrary
+    compile project(":core")
+    compile project(":color-picker-library")
+    compile 'com.google.zxing:core:3.2.1'
+}

@@ -1,0 +1,66 @@
+[
+    {
+        "outputFile": "D:\\projects\\qr-barcode-scanner\\core\\build\\intermediates\\res\\merged\\debug\\values-hdpi-v4\\values-hdpi-v4.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 57,
+                    "endOffset": 108
+                },
+                "from": {
+                    "file": "D:\\projects\\qr-barcode-scanner\\core\\src\\main\\res\\values-hdpi\\strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 114,
+                        "endColumn": 57,
+                        "endOffset": 167
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 113,
+                    "endColumn": 55,
+                    "endOffset": 164
+                },
+                "from": {
+                    "file": "D:\\projects\\qr-barcode-scanner\\core\\src\\main\\res\\values-hdpi\\strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endColumn": 55,
+                        "endOffset": 108
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 169,
+                    "endLine": 8,
+                    "endColumn": 13,
+                    "endOffset": 441
+                },
+                "from": {
+                    "file": "D:\\projects\\qr-barcode-scanner\\core\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.0.1\\res\\values-hdpi\\values-hdpi.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 286,
+                        "endLine": 8,
+                        "endColumn": 13,
+                        "endOffset": 558
+                    }
+                }
+            }
+        ]
+    }
+]

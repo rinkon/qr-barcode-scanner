@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="decode_options">
+        <item>@string/scan_qr_barcode</item>
+        <item>@string/decode_from_file</item>
+        <item>@string/decode_from_url</item>
+    </string-array>
+    <array name="decode_option_icons">
+        <item>@mipmap/camera</item>
+        <item>@mipmap/file</item>
+        <item>@mipmap/internet</item>
+    </array>
+</resources>
