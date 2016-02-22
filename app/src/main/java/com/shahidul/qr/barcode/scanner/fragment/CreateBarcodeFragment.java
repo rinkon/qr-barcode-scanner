@@ -75,7 +75,7 @@ public class CreateBarcodeFragment extends Fragment implements View.OnClickListe
         String errorText = BarcodeUtil.validateText(barcodeFormat,content);
         if (errorText == null) {
             Intent intent = new Intent(getContext(), BarcodeDetailsActivity.class);
-            intent.putExtra(Constant.TEXT, content);
+            intent.putExtra(Constant.BARCODE_CONTENT, content);
             intent.putExtra(Constant.BARCODE_FORMAT, barcodeFormat.toString());
             intent.putExtra(Constant.TIME_STAMP, System.currentTimeMillis());
             startActivity(intent);

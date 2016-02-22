@@ -18,9 +18,14 @@ public class HistoryUtil {
     public static void saveBarcodeDetails(Intent data){
 
     }
-    public static long saveBarcodeDetails(String format, String content, long timeStamp, Context context){
-        Log.d(TAG,"Inserting into history");
-        return new HistoryDatabaseHelper(context).insertToHistory(format,content,timeStamp);
+    public static long saveBarcodeDetails(String format, String content, long timeStamp, byte[] rawImageBytes, Context context){
+        if (!PreferenceUtil.isSaveOnHistoryOn(context)){
+            return -1;
+        }
+        if (!PreferenceUtil.isDuplicateAllowedInHistory(context)){
+            HistoryDatabaseHelper.getInstance(context).deleteByFormatAndContent(format,content);
+        }
+        return HistoryDatabaseHelper.getInstance(context).insertToHistory(format, content, timeStamp, Util.byteArrayToHexString(rawImageBytes));
 
     }
     public static String getDisplayableContent(String content){

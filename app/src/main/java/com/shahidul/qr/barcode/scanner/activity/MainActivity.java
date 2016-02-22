@@ -2,6 +2,8 @@ package com.shahidul.qr.barcode.scanner.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -29,6 +31,7 @@ import com.shahidul.qr.barcode.scanner.util.HistoryUtil;
 import com.shahidul.qr.barcode.scanner.util.PreferenceUtil;
 import com.shahidul.qr.barcode.scanner.util.Util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +49,7 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
     private ViewPager viewPager;
     private ProgressDialog barcodeDownloadingProgressDialog;
     private int[] tabIcons = {
-            R.mipmap.camera,R.mipmap.edit,R.mipmap.history
+            R.drawable.camera,R.drawable.edit,R.drawable.history
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
                     intent.putExtras(data.getExtras());
                     startActivity(intent);
                     HistoryUtil.saveBarcodeDetails(data.getStringExtra(Constant.BARCODE_FORMAT),
-                            data.getStringExtra(Constant.TEXT),data.getLongExtra(Constant.TIME_STAMP, 0),getApplicationContext());
+                            data.getStringExtra(Constant.BARCODE_CONTENT),data.getLongExtra(Constant.TIME_STAMP, 0),data.getByteArrayExtra(Constant.RAW_IMAGE_DATA),getApplicationContext());
                 }
                 break;
             case PICK_IMAGE_REQUEST_CODE:
@@ -110,14 +113,24 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
 
     public void showBarcodeFromInputStream(InputStream inputStream){
         try {
-            Result barcodeDecodeResult = BarcodeUtil.decodeBarcodeFromFile(inputStream);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            if (bitmap == null) {
+                throw new InputStreamNotBitmapException("Input stream is not bitmap");
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] rawImageBytes = stream.toByteArray();
+
+            Result barcodeDecodeResult = BarcodeUtil.decodeBarcodeFromFile(bitmap);
             Intent intent = new Intent(getApplicationContext(),BarcodeDetailsActivity.class);
-            intent.putExtra(Constant.TEXT, barcodeDecodeResult.getText());
+            intent.putExtra(Constant.BARCODE_CONTENT, barcodeDecodeResult.getText());
             intent.putExtra(Constant.BARCODE_FORMAT,barcodeDecodeResult.getBarcodeFormat().toString());
             intent.putExtra(Constant.TIME_STAMP, barcodeDecodeResult.getTimestamp());
+
+            intent.putExtra(Constant.RAW_IMAGE_DATA,rawImageBytes);
             startActivity(intent);
             HistoryUtil.saveBarcodeDetails(barcodeDecodeResult.getBarcodeFormat().toString(),barcodeDecodeResult.getText(),
-                    barcodeDecodeResult.getTimestamp(),getApplicationContext());
+                    barcodeDecodeResult.getTimestamp(),rawImageBytes,getApplicationContext());
             if (PreferenceUtil.isPlaySoundOn(getApplicationContext())){
                 Util.playSoundTone(getApplicationContext());
             }
@@ -128,6 +141,7 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
             showText(getString(R.string.image_is_not_barcode));
         } catch (NotFoundException e) {
             Log.d(TAG, "File not found", e);
+            showText(getString(R.string.barcode_not_found));
         }
     }
     private void setupTabIcons() {

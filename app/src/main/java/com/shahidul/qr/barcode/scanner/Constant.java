@@ -5,10 +5,11 @@ package com.shahidul.qr.barcode.scanner;
  * @since 1/27/2016.
  */
 public interface Constant {
-    String TEXT = "text";
+    String ID = "id";
+    String BARCODE_CONTENT = "barcode_content";
     String BARCODE_FORMAT = "barcode_format";
     String TIME_STAMP = "time_stamp";
-    String RAW_DATA = "raw_data";
+    String RAW_IMAGE_DATA = "raw_image_data";
     int BARCODE_WIDTH = 280;
     int BARCODE_HEIGHT = 280;
 

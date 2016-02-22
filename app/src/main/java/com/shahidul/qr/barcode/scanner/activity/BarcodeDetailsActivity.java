@@ -56,8 +56,8 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
         Intent intent = getIntent();
         mBarcodeDetailsView.setText(Html.fromHtml(Util.getBarcodeDetails(intent, getApplicationContext())));
         mFormat = intent.getStringExtra(Constant.BARCODE_FORMAT);
-        mContent = intent.getStringExtra(Constant.TEXT);
-        mRawBytes = intent.getByteArrayExtra(Constant.RAW_DATA);
+        mContent = intent.getStringExtra(Constant.BARCODE_CONTENT);
+        mRawBytes = intent.getByteArrayExtra(Constant.RAW_IMAGE_DATA);
         mBarcodeTextView.setText(mContent);
         showBarcode(mContent,mFormat, BarcodeUtil.BLACK);
     }
@@ -65,16 +65,19 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
         BarcodeFormat barcodeFormat = BarcodeFormat.valueOf(format);
         try {
             mBarcodeBitMap = BarcodeUtil.encodeAsBitmap(content,barcodeFormat,color, Constant.BARCODE_WIDTH,Constant.BARCODE_HEIGHT);
-            mBarcodeImageView.setImageBitmap(mBarcodeBitMap);
         } catch (WriterException e) {
             Log.d(TAG, "BarcodeEncodingException", e);
         }
-
-       /* if (mRawBytes != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(mRawBytes, 0, mRawBytes.length);
-            mBarcodeImageView.setImageBitmap(bitmap);
+        if (mBarcodeBitMap != null){
+            mBarcodeImageView.setImageBitmap(mBarcodeBitMap);
         }
-*/
+        else {
+            mChangeColorView.setEnabled(false);
+            if (mRawBytes != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(mRawBytes, 0, mRawBytes.length);
+                mBarcodeImageView.setImageBitmap(bitmap);
+            }
+        }
     }
 
     @Override

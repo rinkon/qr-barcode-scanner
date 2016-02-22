@@ -42,5 +42,8 @@
     <string name="start_in_scan_mode">Start in Scan Mode</string>
     <string name="start_in_scan_mode_summary">Start Application in scan mode</string>
     <string name="save_in_history">Save in History</string>
-    <string name="save_in_history_summary">Save in history scanned and decoded QR/Barcodes</string>
+    <string name="save_in_history_summary">Save in history scanned and decoded QR/Barcode</string>
+    <string name="allow_duplicate_in_history">Allow Duplicate in History</string>
+    <string name="allow_duplicate_in_history_summary">Store multiple scans of the same QR/Barcode in history</string>
+    <string name="barcode_not_found">Barcode not found in selected image</string>
 </resources>

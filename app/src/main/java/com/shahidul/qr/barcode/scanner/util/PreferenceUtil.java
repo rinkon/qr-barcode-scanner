@@ -25,4 +25,8 @@ public class PreferenceUtil {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getBoolean("save_in_history",true);
     }
+    public static boolean isDuplicateAllowedInHistory(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("allow_duplicate_in_history",true);
+    }
 }

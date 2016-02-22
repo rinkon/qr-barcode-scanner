@@ -22,4 +22,9 @@
         android:key="save_in_history"
         android:summary="@string/save_in_history_summary"
         android:title="@string/save_in_history" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="allow_duplicate_in_history"
+        android:summary="@string/allow_duplicate_in_history_summary"
+        android:title="@string/allow_duplicate_in_history" />
 </PreferenceScreen>

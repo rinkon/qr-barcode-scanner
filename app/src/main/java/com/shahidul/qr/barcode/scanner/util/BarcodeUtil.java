@@ -98,11 +98,7 @@ public class BarcodeUtil {
         return "UTF-8";
     }
 
-    public static Result decodeBarcodeFromFile(InputStream inputStream) throws InputStreamNotBitmapException, NotFoundException {
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        if (bitmap == null) {
-            throw new InputStreamNotBitmapException("Input stream is not bitmap");
-        }
+    public static Result decodeBarcodeFromFile(Bitmap bitmap) throws InputStreamNotBitmapException, NotFoundException {
         int width = bitmap.getWidth(), height = bitmap.getHeight();
         int[] pixels = new int[width * height];
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);

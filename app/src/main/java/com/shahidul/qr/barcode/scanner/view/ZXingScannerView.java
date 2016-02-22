@@ -3,6 +3,7 @@ package com.shahidul.qr.barcode.scanner.view;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +19,7 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -31,7 +33,7 @@ public class ZXingScannerView extends BarcodeScannerView {
     private static final String TAG = "ZXingScannerView";
 
     public interface ResultHandler {
-        public void handleResult(Result rawResult);
+        public void handleResult(Result rawResult, byte[] rawImageData);
     }
 
     private MultiFormatReader mMultiFormatReader;
@@ -112,6 +114,19 @@ public class ZXingScannerView extends BarcodeScannerView {
                 data = rotatedData;
             }
 
+
+            //Added to return raw Data
+            YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            yuv.compressToJpeg(new Rect(0, 0, width, height), 70, out);
+
+            final byte[] rawImageData = out.toByteArray();
+
+
+
+
+
             Result rawResult = null;
             PlanarYUVLuminanceSource source = buildLuminanceSource(data, width, height);
 
@@ -145,7 +160,7 @@ public class ZXingScannerView extends BarcodeScannerView {
 
                         stopCameraPreview();
                         if (tmpResultHandler != null) {
-                            tmpResultHandler.handleResult(finalRawResult);
+                            tmpResultHandler.handleResult(finalRawResult, rawImageData);
                         }
                     }
                 });

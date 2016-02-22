@@ -191,18 +191,19 @@ public class ScannerActivity extends AppCompatActivity implements MessageDialogF
     }
 
     @Override
-    public void handleResult(Result rawResult) {
+    public void handleResult(Result rawResult, byte[] rawImageData) {
         Intent intent = new Intent();
-        intent.putExtra(Constant.TEXT,rawResult.getText());
+        intent.putExtra(Constant.BARCODE_CONTENT,rawResult.getText());
         intent.putExtra(Constant.BARCODE_FORMAT, rawResult.getBarcodeFormat().toString());
         intent.putExtra(Constant.TIME_STAMP, rawResult.getTimestamp());
-        intent.putExtra(Constant.RAW_DATA,rawResult.getRawBytes());
+        intent.putExtra(Constant.RAW_IMAGE_DATA,rawImageData);
         if (PreferenceUtil.isPlaySoundOn(getApplicationContext())){
             Util.playSoundTone(getApplicationContext());
         }
         if (PreferenceUtil.isVibrateOn(getApplicationContext())){
             Util.vibrateDevice(getApplicationContext());
         }
+
         showMessageDialog("Contents = " + rawResult.getText() + ", Format = " + rawResult.getBarcodeFormat().toString());
         setResult(Activity.RESULT_OK,intent);
         finish();

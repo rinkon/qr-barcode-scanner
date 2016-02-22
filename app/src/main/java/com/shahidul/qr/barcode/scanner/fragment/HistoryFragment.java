@@ -1,26 +1,27 @@
 package com.shahidul.qr.barcode.scanner.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.shahidul.qr.barcode.scanner.Constant;
 import com.shahidul.qr.barcode.scanner.R;
+import com.shahidul.qr.barcode.scanner.activity.BarcodeDetailsActivity;
 import com.shahidul.qr.barcode.scanner.db.HistoryDatabaseHelper;
 import com.shahidul.qr.barcode.scanner.db.SQLiteCursorLoader;
 import com.shahidul.qr.barcode.scanner.util.HistoryUtil;
+import com.shahidul.qr.barcode.scanner.util.Util;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -55,7 +56,7 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG,new Exception().getStackTrace()[0].getMethodName());
         String sql = "SELECT * FROM " + HistoryDatabaseHelper.TABLE_NAME;
-        cursorLoader = new SQLiteCursorLoader(getContext(),new HistoryDatabaseHelper(getContext()),sql,null);
+        cursorLoader = new SQLiteCursorLoader(getContext(),HistoryDatabaseHelper.getInstance(getContext()),sql,null);
         return cursorLoader;
     }
 
@@ -99,7 +100,9 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
 
         @Override
         public void bindView(View view, Context context, final Cursor cursor) {
-            HistoryViewHolder historyViewHolder = (HistoryViewHolder) view.getTag();
+            final HistoryViewHolder historyViewHolder = (HistoryViewHolder) view.getTag();
+            final long id = cursor.getLong(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_ID));
+            historyViewHolder.setId(id);
             String content = cursor.getString(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_BARCODE_CONTENT));
             long dateTime = cursor.getLong(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_DATE));
             historyViewHolder.mContentView.setText(HistoryUtil.getDisplayableContent(content));
@@ -108,12 +111,27 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    long id = cursor.getLong(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_ID));
-                    /*int affectedRows = new HistoryDatabaseHelper(getContext()).deleteHistoryById(id);
-                    Log.d(TAG,affectedRows + " row deleted");*/
-                    cursorLoader.delete(HistoryDatabaseHelper.TABLE_NAME,HistoryDatabaseHelper.COLUMN_ID + " = ?",new String[]{String.valueOf(id)});
+                    int affectedRows = new HistoryDatabaseHelper(getContext()).deleteHistoryById(id);
+                    Log.d(TAG,affectedRows + " row deleted");
+                    cursorLoader.delete(HistoryDatabaseHelper.TABLE_NAME, HistoryDatabaseHelper.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
                     //getLoaderManager().initLoader(HISTORY_LOADER_ID, null, HistoryFragment.this);
                     return true;
+                }
+            });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Cursor c = HistoryDatabaseHelper.getInstance(getContext()).getHistoryById(id);
+                    if (c.moveToFirst()) {
+                        Intent intent = new Intent(getActivity(), BarcodeDetailsActivity.class);
+                        intent.putExtra(Constant.ID, c.getLong(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_ID)));
+                        intent.putExtra(Constant.BARCODE_FORMAT, c.getString(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_BARCODE_FORMAT)));
+                        intent.putExtra(Constant.BARCODE_CONTENT, c.getString(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_BARCODE_CONTENT)));
+                        intent.putExtra(Constant.TIME_STAMP, c.getLong(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_DATE)));
+                        intent.putExtra(Constant.RAW_IMAGE_DATA, Util.hexStringToByteArray(c.getString(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_RAW_IMAGE))));
+                        startActivity(intent);
+                    }
+
                 }
             });
         }
@@ -124,5 +142,12 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
         TextView mContentView;
         TextView mDateView;
         TextView mTimeView;
+        long id;
+        void setId(long id){
+            this.id = id;
+        }
+        long getId(){
+            return id;
+        }
     }
 }
