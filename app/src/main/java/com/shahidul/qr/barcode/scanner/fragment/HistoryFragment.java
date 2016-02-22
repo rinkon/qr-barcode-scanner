@@ -1,5 +1,7 @@
 package com.shahidul.qr.barcode.scanner.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,7 +12,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -82,6 +88,8 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
     private class HistoryListAdapter extends CursorAdapter {
 
 
+        private ActionMode mActionMode;
+
         public HistoryListAdapter(Context context, Cursor c, boolean autoRequery) {
             super(context, c, autoRequery);
         }
@@ -99,22 +107,69 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
         }
 
         @Override
-        public void bindView(View view, Context context, final Cursor cursor) {
+        public void bindView(final View view, Context context, final Cursor cursor) {
             final HistoryViewHolder historyViewHolder = (HistoryViewHolder) view.getTag();
             final long id = cursor.getLong(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_ID));
-            historyViewHolder.setId(id);
             String content = cursor.getString(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_BARCODE_CONTENT));
             long dateTime = cursor.getLong(cursor.getColumnIndex(HistoryDatabaseHelper.COLUMN_DATE));
             historyViewHolder.mContentView.setText(HistoryUtil.getDisplayableContent(content));
             historyViewHolder.mDateView.setText(DateFormat.getDateInstance().format(new Date(dateTime)));
             historyViewHolder.mTimeView.setText(DateFormat.getTimeInstance().format(new Date(dateTime)));
+            final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+                // Called when the action mode is created; startActionMode() was called
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    // Inflate a menu resource providing context menu items
+                    MenuInflater inflater = mode.getMenuInflater();
+                    inflater.inflate(R.menu.history_item_context_menu, menu);
+                    return true;
+                }
+
+                // Called each time the action mode is shown. Always called after onCreateActionMode, but
+                // may be called multiple times if the mode is invalidated.
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false; // Return false if nothing is done
+                }
+
+                // Called when the user selects a contextual menu item
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.delete:
+                            cursorLoader.delete(HistoryDatabaseHelper.TABLE_NAME, HistoryDatabaseHelper.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+                            mode.finish();
+                            return true;
+                        case R.id.copy:
+                            Cursor c = HistoryDatabaseHelper.getInstance(getContext()).getHistoryById(id);
+                            if (c.moveToFirst()) {
+                                ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("barcode_content", c.getString(c.getColumnIndex(HistoryDatabaseHelper.COLUMN_BARCODE_CONTENT)));
+                                clipboard.setPrimaryClip(clip);
+                            }
+                            mode.finish();
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+
+                // Called when the user exits the action mode
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+                    mActionMode = null;
+                }
+            };
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    int affectedRows = new HistoryDatabaseHelper(getContext()).deleteHistoryById(id);
-                    Log.d(TAG,affectedRows + " row deleted");
-                    cursorLoader.delete(HistoryDatabaseHelper.TABLE_NAME, HistoryDatabaseHelper.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-                    //getLoaderManager().initLoader(HISTORY_LOADER_ID, null, HistoryFragment.this);
+                    if (mActionMode != null) {
+                        return false;
+                    }
+
+                    // Start the CAB using the ActionMode.Callback defined above
+                    mActionMode = getActivity().startActionMode(mActionModeCallback);
                     return true;
                 }
             });
@@ -137,17 +192,9 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
         }
     }
 
-
     private class HistoryViewHolder{
         TextView mContentView;
         TextView mDateView;
         TextView mTimeView;
-        long id;
-        void setId(long id){
-            this.id = id;
-        }
-        long getId(){
-            return id;
-        }
     }
 }

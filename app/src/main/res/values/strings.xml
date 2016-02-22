@@ -46,4 +46,6 @@
     <string name="allow_duplicate_in_history">Allow Duplicate in History</string>
     <string name="allow_duplicate_in_history_summary">Store multiple scans of the same QR/Barcode in history</string>
     <string name="barcode_not_found">Barcode not found in selected image</string>
+    <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
 </resources>
