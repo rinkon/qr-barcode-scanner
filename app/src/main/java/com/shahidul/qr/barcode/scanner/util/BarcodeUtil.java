@@ -111,6 +111,9 @@ public class BarcodeUtil {
     }
 
     public static String validateText(BarcodeFormat barcodeFormat, String content){
+        if (TextUtils.isEmpty(content)){
+            return "Type something";
+        }
         switch (barcodeFormat){
             case AZTEC:
                 return null;

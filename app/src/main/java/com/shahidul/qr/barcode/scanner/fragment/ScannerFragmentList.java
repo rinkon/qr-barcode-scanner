@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.shahidul.qr.barcode.scanner.R;
 import com.shahidul.qr.barcode.scanner.adapter.ScannerRecyclerViewAdapter;
@@ -52,6 +53,7 @@ public class ScannerFragmentList extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
     }
 
     @Override

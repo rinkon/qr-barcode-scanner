@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +31,7 @@ import com.shahidul.qr.barcode.scanner.view.ZXingScannerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScannerActivity extends AppCompatActivity implements MessageDialogFragment.MessageDialogListener,
+public class ScannerActivity extends BaseActivity implements MessageDialogFragment.MessageDialogListener,
         ZXingScannerView.ResultHandler, FormatSelectorDialogFragment.FormatSelectorDialogListener,
         CameraSelectorDialogFragment.CameraSelectorDialogListener, ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String FLASH_STATE = "FLASH_STATE";
@@ -64,7 +63,7 @@ public class ScannerActivity extends AppCompatActivity implements MessageDialogF
         }
 
         setContentView(R.layout.activity_simple_scanner);
-        setupToolbar();
+        setUpToolBar();
 
 
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
@@ -268,12 +267,12 @@ public class ScannerActivity extends AppCompatActivity implements MessageDialogF
     }
 
 
-    public void setupToolbar() {
+  /*  public void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
         if(ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
-    }
+    }*/
 }

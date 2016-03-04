@@ -1,6 +1,10 @@
 package com.shahidul.qr.barcode.scanner.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -9,6 +13,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +26,7 @@ import com.google.zxing.WriterException;
 import com.shahidul.qr.barcode.scanner.Constant;
 import com.shahidul.qr.barcode.scanner.R;
 
+import com.shahidul.qr.barcode.scanner.db.HistoryDatabaseHelper;
 import com.shahidul.qr.barcode.scanner.util.BarcodeUtil;
 import com.shahidul.qr.barcode.scanner.util.Util;
 
@@ -40,6 +49,7 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
     private String mFormat;
     private String mContent;
     private byte[] mRawBytes;
+    private ActionMode mActionMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +69,20 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
         mContent = intent.getStringExtra(Constant.BARCODE_CONTENT);
         mRawBytes = intent.getByteArrayExtra(Constant.RAW_IMAGE_DATA);
         mBarcodeTextView.setText(mContent);
-        showBarcode(mContent,mFormat, BarcodeUtil.BLACK);
+        showBarcode(mContent, mFormat, BarcodeUtil.BLACK);
+
+        mBarcodeTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mActionMode != null) {
+                    return false;
+                }
+
+                // Start the CAB using the ActionMode.Callback defined above
+                mActionMode = startActionMode(mActionModeCallback);
+                return true;
+            }
+        });
     }
     void showBarcode(String content, String format, int color){
         BarcodeFormat barcodeFormat = BarcodeFormat.valueOf(format);
@@ -97,7 +120,7 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
                         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         shareIntent.setType("image/png");
                         //shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
-                        //shareIntent.putExtra(Intent.EXTRA_TEXT,mContent);
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,mContent);
                         shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
                         startActivity(Intent.createChooser(shareIntent, "Choose an app"));
 
@@ -108,7 +131,45 @@ public class BarcodeDetailsActivity extends BaseActivity implements View.OnClick
                 break;
         }
     }
+    ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.barcode_content_context_menu, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.copy:
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("barcode_content", mContent);
+                    clipboard.setPrimaryClip(clip);
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
     private void showColorPicker(){
         AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, 0xFF000000, true, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override

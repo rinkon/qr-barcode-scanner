@@ -36,14 +36,15 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:id="@+id/horizontal_line"
                 android:layout_below="@id/barcode_format"
-                android:background="@color/dark_grey"/>
+                android:background="?android:attr/listDivider"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/horizontal_line"
+            android:gravity="top|left"
             android:minLines="6"
             android:hint="@string/barcode_content_text_hint"
             android:id="@+id/content"/>

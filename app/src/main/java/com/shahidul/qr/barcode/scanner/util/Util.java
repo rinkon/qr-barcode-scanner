@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Vibrator;
 import android.util.Log;
 
@@ -56,19 +58,17 @@ public class Util {
     public static void playSoundTone(Context context){
         MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.sound);
         mediaPlayer.start();
-        /*try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(context, notification);
-            r.play();
-        } catch (Exception e) {
-            Log.d(TAG, "Exception in playing ringtone", e);
-        }*/
     }
     public static void vibrateDevice(Context context){
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(500);
     }
-
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) (context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
     public static String byteArrayToHexString(byte[] bytes) {
         if (bytes == null){
             return null;

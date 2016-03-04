@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -28,4 +28,6 @@ dependencies {
     compile supportRecyclerViewLibrary
     compile project(":core")
     compile project(":color-picker-library")
-    compile 'com.google.zxing:core:3.2.1' }
+    compile 'com.google.zxing:core:3.2.1'
+    compile 'com.google.android.gms:play-services-ads:8.1.0'
+}

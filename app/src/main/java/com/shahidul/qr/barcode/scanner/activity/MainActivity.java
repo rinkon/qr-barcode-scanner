@@ -14,8 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
 import com.shahidul.qr.barcode.scanner.Constant;
@@ -48,9 +51,11 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ProgressDialog barcodeDownloadingProgressDialog;
+    private AdView mAdView;
     private int[] tabIcons = {
             R.drawable.camera,R.drawable.edit,R.drawable.history
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +67,17 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+        mAdView = (AdView)findViewById(R.id.ad_view);
+        if (Util.isNetworkAvailable(getApplicationContext())) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
+        else {
+            mAdView.setVisibility(View.GONE);
+        }
+        if (PreferenceUtil.isStartInScanModeOn(getApplicationContext())){
+            onListFragmentInteraction(null,-1,0);
+        }
     }
 
     @Override
@@ -72,9 +88,14 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.setting:
-                Intent intent = new Intent(getApplicationContext(),SettingActivity.class);
+                intent = new Intent(getApplicationContext(),SettingActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.about:
+                intent = new Intent(getApplicationContext(),AboutActivity.class);
                 startActivity(intent);
                 return true;
         }
@@ -148,20 +169,6 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
         for (int i = 0; i < tabIcons.length; i++){
             tabLayout.getTabAt(i).setIcon(tabIcons[i]);
         }
-        /*TextView scanView = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        scanView.setText(R.string.scan);
-        scanView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.camera, 0, 0, 0);
-        tabLayout.getTabAt(0).setCustomView(scanView);
-
-        TextView createView = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        createView.setText(R.string.create);
-        createView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.file, 0, 0, 0);
-        tabLayout.getTabAt(1).setCustomView(createView);
-
-        TextView historyView = (TextView) LayoutInflater.from(this).inflate(R.layout.tab, null);
-        historyView.setText(R.string.history);
-        historyView.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.history,0, 0, 0);
-        tabLayout.getTabAt(2).setCustomView(historyView);*/
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -199,7 +206,7 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
     @Override
     public void onInputUrl(String url) {
         String completeUrl = url;
-        if (!url.startsWith("http") || !url.startsWith("ftp")){
+        if (!url.startsWith("http") && !url.startsWith("ftp")){
             completeUrl = "http://" + url;
         }
         URL urlObject = null;
@@ -207,7 +214,7 @@ public class MainActivity extends BaseActivity implements ScannerFragmentList.On
             urlObject = new URL(completeUrl);
         } catch (MalformedURLException e) {
             Log.d(TAG, "Invalid URL",e);
-            MessageDialogFragment.newInstance("Invalid URL", url + " is not a valid url",null).show(getSupportFragmentManager(), "message_dialog");
+            MessageDialogFragment.newInstance("Invalid URL", url + " is not a valid URL",null).show(getSupportFragmentManager(), "message_dialog");
         }
         if (urlObject != null){
             new BarcodeDownloaderTask().execute(urlObject);

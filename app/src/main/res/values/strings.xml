@@ -7,7 +7,7 @@
 
     <string name="scan_qr_barcode">Scan QR/Barcode</string>
     <string name="decode_from_file">Decode from File</string>
-    <string name="decode_from_url">Decode from Url</string>
+    <string name="decode_from_url">Decode from URL</string>
 
     <string name="toggle_flash">Flash</string>
     <string name="flash_on">Flash [ON]</string>
@@ -37,15 +37,23 @@
     <string name="sound">Sound</string>
     <string name="sound_summary">Play sound on scan success</string>
     <string name="setting">Setting</string>
+    <string name="settings">Settings</string>
     <string name="vibrate">Vibrate</string>
     <string name="vibrate_summary">Vibrate on scan success</string>
-    <string name="start_in_scan_mode">Start in Scan Mode</string>
-    <string name="start_in_scan_mode_summary">Start Application in scan mode</string>
-    <string name="save_in_history">Save in History</string>
+    <string name="start_in_scan_mode">Start in scan mode</string>
+    <string name="start_in_scan_mode_summary">Start application in scan mode</string>
+    <string name="save_in_history">Save in history</string>
     <string name="save_in_history_summary">Save in history scanned and decoded QR/Barcode</string>
-    <string name="allow_duplicate_in_history">Allow Duplicate in History</string>
+    <string name="allow_duplicate_in_history">Allow duplicate in history</string>
     <string name="allow_duplicate_in_history_summary">Store multiple scans of the same QR/Barcode in history</string>
     <string name="barcode_not_found">Barcode not found in selected image</string>
     <string name="delete">Delete</string>
     <string name="copy">Copy</string>
+    <string name="add_unit_banner">Your Add Unit</string>
+    <string name="about">About</string>
+    <string name="app_info">QR Barcode Scanner developed by Shahidul Islam, uses open source library zxing which is released under Apache License 2.0,
+    Project source code is available in Github at link https://github.com/shahidul2k9/qr-barcode-scanner</string>
+    <string name="version">Version</string>
+    <string name="source_code">Source code</string>
+    <string name="qr_barcode_details">QR Barcode Details</string>
 </resources>

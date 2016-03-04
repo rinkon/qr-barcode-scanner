@@ -13,7 +13,7 @@ import com.shahidul.qr.barcode.scanner.db.HistoryDatabaseHelper;
  */
 public class HistoryUtil {
     private static final String TAG = HistoryUtil.class.getSimpleName();
-    public static final int DISPLAYABLE_CONTENT_LENGTH = 37;
+    public static final int DISPLAYABLE_CONTENT_LENGTH = 97;
 
     public static void saveBarcodeDetails(Intent data){
 
